@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MedTrack — Medicine Reminder &amp; Health Tracker</title>
+  <meta name="description" content="MedTrack — Your personal AI-powered medicine reminder and health tracker. Manage medicines, appointments, and health goals." />
+  <link rel="manifest" href="manifest.json" />
+  <meta name="theme-color" content="#1d72e8" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="apple-mobile-web-app-title" content="MedTrack" />
+  <link rel="apple-touch-icon" href="icons/icon.svg" />
+  <link rel="icon" type="image/svg+xml" href="icons/icon.svg" />
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════════
+       AUTH SCREEN
+  ════════════════════════════════════════════════ -->
+  <div id="auth-screen" class="auth-screen">
+    <div class="auth-card">
+      <div class="auth-brand">
+        <div class="brand-icon">💊</div>
+        <h1>MedTrack</h1>
+        <p>Your personal health companion</p>
+      </div>
+
+      <!-- Tab switcher -->
+      <div class="auth-tabs">
+        <button class="auth-tab active" data-tab="login">Login</button>
+        <button class="auth-tab" data-tab="signup">Sign Up</button>
+      </div>
+
+      <!-- Login Form -->
+      <form id="login-form" class="auth-form active" novalidate>
+        <div class="form-group">
+          <label for="login-email">Email</label>
+          <input type="email" id="login-email" placeholder="you@example.com" required autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password" minlength="6" />
+        </div>
+        <div id="login-error" class="auth-error hidden" role="alert" aria-live="polite"></div>
+        <button type="submit" class="btn-primary full-width">Login</button>
+        <p class="auth-hint">Demo: register with any email + password (min 6 chars)</p>
+      </form>
+
+      <!-- Signup Form -->
+      <form id="signup-form" class="auth-form" novalidate>
+        <div class="form-group">
+          <label for="signup-name">Full Name</label>
+          <input type="text" id="signup-name" placeholder="John Doe" required autocomplete="name" />
+        </div>
+        <div class="form-group">
+          <label for="signup-email">Email</label>
+          <input type="email" id="signup-email" placeholder="you@example.com" required autocomplete="email" />
+        </div>
+        <div class="form-group">
+          <label for="signup-password">Password</label>
+          <input type="password" id="signup-password" placeholder="Min 6 characters" required autocomplete="new-password" minlength="6" />
+        </div>
+        <div id="signup-error" class="auth-error hidden" role="alert" aria-live="polite"></div>
+        <button type="submit" class="btn-primary full-width">Create Account</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       MAIN APP
+  ════════════════════════════════════════════════ -->
+  <div id="app" class="app hidden">
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar" aria-label="Main navigation">
+      <div class="sidebar-brand">
+        <span class="brand-icon" aria-hidden="true">💊</span>
+        <span class="brand-name">MedTrack</span>
+      </div>
+
+      <nav class="sidebar-nav" aria-label="Sections">
+        <a href="#" class="nav-item active" data-section="dashboard" aria-current="page">
+          <span class="nav-icon" aria-hidden="true">🏠</span><span class="nav-label">Dashboard</span>
+        </a>
+        <a href="#" class="nav-item" data-section="medicines">
+          <span class="nav-icon" aria-hidden="true">💊</span><span class="nav-label">Medicines</span>
+        </a>
+        <a href="#" class="nav-item" data-section="schedule">
+          <span class="nav-icon" aria-hidden="true">📅</span><span class="nav-label">Schedule</span>
+        </a>
+        <a href="#" class="nav-item" data-section="tracker">
+          <span class="nav-icon" aria-hidden="true">📊</span><span class="nav-label">Health Tracker</span>
+        </a>
+        <a href="#" class="nav-item" data-section="appointments">
+          <span class="nav-icon" aria-hidden="true">🏥</span><span class="nav-label">Appointments</span>
+        </a>
+        <a href="#" class="nav-item" data-section="stats">
+          <span class="nav-icon" aria-hidden="true">📈</span><span class="nav-label">Statistics</span>
+        </a>
+        <a href="#" class="nav-item" data-section="emergency">
+          <span class="nav-icon" aria-hidden="true">🚨</span><span class="nav-label">Emergency</span>
+        </a>
+        <a href="#" class="nav-item" data-section="calendar">
+          <span class="nav-icon" aria-hidden="true">📆</span><span class="nav-label">Calendar</span>
+        </a>
+        <a href="#" class="nav-item" data-section="history">
+          <span class="nav-icon" aria-hidden="true">📋</span><span class="nav-label">History</span>
+        </a>
+        <a href="#" class="nav-item" data-section="doctors">
+          <span class="nav-icon" aria-hidden="true">👨‍⚕️</span><span class="nav-label">Doctors</span>
+        </a>
+        <a href="#" class="nav-item" data-section="prescriptions">
+          <span class="nav-icon" aria-hidden="true">📄</span><span class="nav-label">Prescriptions</span>
+        </a>
+        <a href="#" class="nav-item" data-section="family">
+          <span class="nav-icon" aria-hidden="true">👨‍👩‍👧</span><span class="nav-label">Family</span>
+        </a>
+        <a href="#" class="nav-item" data-section="ai">
+          <span class="nav-icon" aria-hidden="true">🤖</span><span class="nav-label">AI Assistant</span>
+        </a>
+        <a href="#" class="nav-item" data-section="settings">
+          <span class="nav-icon" aria-hidden="true">⚙️</span><span class="nav-label">Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button id="theme-toggle" class="theme-btn" title="Toggle dark/light theme" aria-label="Toggle dark/light theme">🌙</button>
+        <button id="logout-btn" class="logout-btn">Logout</button>
+      </div>
+    </aside>
+
+    <!-- Mobile Header -->
+    <header class="mobile-header" role="banner">
+      <button id="menu-toggle" class="menu-btn" aria-label="Open navigation menu" aria-expanded="false" aria-controls="sidebar">☰</button>
+      <span class="mobile-brand" aria-hidden="true">💊 MedTrack</span>
+      <button id="mobile-theme-toggle" class="theme-btn" aria-label="Toggle dark/light theme">🌙</button>
+    </header>
+
+    <!-- Main content -->
+    <main class="main-content" id="main-content">
+
+      <!-- ─── DASHBOARD ─── -->
+      <section id="section-dashboard" class="section active">
+        <div class="section-header">
+          <div>
+            <h2>Good <span id="greeting-time"></span>, <span id="user-name-display"></span>! 👋</h2>
+            <p class="subtitle" id="today-date"></p>
+          </div>
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card blue">
+            <div class="stat-icon">💊</div>
+            <div class="stat-info">
+              <span class="stat-value" id="dash-total-meds">0</span>
+              <span class="stat-label">Total Medicines</span>
+            </div>
+          </div>
+          <div class="stat-card green">
+            <div class="stat-icon">✅</div>
+            <div class="stat-info">
+              <span class="stat-value" id="dash-taken-today">0</span>
+              <span class="stat-label">Taken Today</span>
+            </div>
+          </div>
+          <div class="stat-card orange">
+            <div class="stat-icon">⏰</div>
+            <div class="stat-info">
+              <span class="stat-value" id="dash-pending">0</span>
+              <span class="stat-label">Pending</span>
+            </div>
+          </div>
+          <div class="stat-card purple">
+            <div class="stat-icon">💧</div>
+            <div class="stat-info">
+              <span class="stat-value" id="dash-water">0</span>
+              <span class="stat-label">Glasses of Water</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-grid">
+          <div class="card">
+            <div class="card-header">
+              <h3>Today's Medicines</h3>
+              <a href="#" class="view-all" data-section="schedule">View All</a>
+            </div>
+            <div id="dash-medicine-list" class="medicine-list-compact"></div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>Today's Mood</h3></div>
+            <div class="mood-quick">
+              <p class="mood-question">How are you feeling?</p>
+              <div class="mood-emojis" id="dash-mood">
+                <button class="mood-btn" data-mood="😄" title="Great">😄</button>
+                <button class="mood-btn" data-mood="🙂" title="Good">🙂</button>
+                <button class="mood-btn" data-mood="😐" title="Okay">😐</button>
+                <button class="mood-btn" data-mood="😟" title="Bad">😟</button>
+                <button class="mood-btn" data-mood="😢" title="Terrible">😢</button>
+              </div>
+              <p id="mood-selected" class="mood-selected-text"></p>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>Water Intake</h3></div>
+            <div class="water-tracker">
+              <div class="water-glasses" id="water-glasses-dash" role="group" aria-label="Water glasses"></div>
+              <div class="water-controls">
+                <button class="btn-icon" id="water-minus" aria-label="Remove one glass of water">−</button>
+                <span id="water-count-dash" aria-live="polite">0 / 8 glasses</span>
+                <button class="btn-icon" id="water-plus" aria-label="Add one glass of water">+</button>
+              </div>
+              <div class="water-progress-bar"><div id="water-progress" class="water-fill"></div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>Steps Today</h3></div>
+            <div class="steps-tracker">
+              <div class="steps-display">
+                <span id="steps-count" class="steps-big">0</span>
+                <span class="steps-goal">/ 10,000 goal</span>
+              </div>
+              <div class="steps-progress-bar"><div id="steps-progress" class="steps-fill"></div></div>
+              <div class="steps-controls">
+                <input type="number" id="steps-input" placeholder="Enter steps" min="0" />
+                <button class="btn-primary small" id="steps-update">Update</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── MEDICINES ─── -->
+      <section id="section-medicines" class="section">
+        <div class="section-header">
+          <h2>💊 My Medicines</h2>
+          <div style="display:flex;gap:8px">
+            <button class="btn-secondary" id="filter-medicines-btn">🔍 Filter</button>
+            <button class="btn-primary" id="add-medicine-btn">+ Add Medicine</button>
+          </div>
+        </div>
+        <div id="medicines-list" class="medicines-grid"></div>
+      </section>
+
+      <!-- ─── SCHEDULE ─── -->
+      <section id="section-schedule" class="section">
+        <div class="section-header"><h2>📅 Daily Schedule</h2></div>
+        <div class="schedule-tabs">
+          <button class="sched-tab active" data-time="morning">🌅 Morning</button>
+          <button class="sched-tab" data-time="afternoon">☀️ Afternoon</button>
+          <button class="sched-tab" data-time="evening">🌆 Evening</button>
+          <button class="sched-tab" data-time="night">🌙 Night</button>
+        </div>
+        <div id="schedule-list" class="schedule-list"></div>
+      </section>
+
+      <!-- ─── HEALTH TRACKER ─── -->
+      <section id="section-tracker" class="section">
+        <div class="section-header"><h2>📊 Health Tracker</h2></div>
+        <div class="tracker-grid">
+          <div class="card">
+            <div class="card-header"><h3>💧 Water Intake</h3></div>
+            <div class="water-tracker">
+              <div class="water-glasses" id="water-glasses-tracker" role="group" aria-label="Water glasses"></div>
+              <div class="water-controls">
+                <button class="btn-icon" id="water-minus-t" aria-label="Remove one glass of water">−</button>
+                <span id="water-count-tracker" aria-live="polite">0 / 8 glasses</span>
+                <button class="btn-icon" id="water-plus-t" aria-label="Add one glass of water">+</button>
+              </div>
+              <div class="water-progress-bar"><div id="water-progress-t" class="water-fill"></div></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>👣 Step Counter</h3></div>
+            <div class="steps-tracker">
+              <div class="steps-display">
+                <span id="steps-count-t" class="steps-big">0</span>
+                <span class="steps-goal">/ 10,000 goal</span>
+              </div>
+              <div class="steps-progress-bar"><div id="steps-progress-t" class="steps-fill"></div></div>
+              <div class="steps-controls">
+                <input type="number" id="steps-input-t" placeholder="Enter steps" min="0" />
+                <button class="btn-primary small" id="steps-update-t">Update</button>
+              </div>
+            </div>
+          </div>
+          <div class="card full-width">
+            <div class="card-header"><h3>😊 Mood Tracker</h3></div>
+            <div class="mood-tracker-full">
+              <p>Select today's mood:</p>
+              <div class="mood-emojis large" id="tracker-mood">
+                <button class="mood-btn" data-mood="😄" title="Great">😄<span>Great</span></button>
+                <button class="mood-btn" data-mood="🙂" title="Good">🙂<span>Good</span></button>
+                <button class="mood-btn" data-mood="😐" title="Okay">😐<span>Okay</span></button>
+                <button class="mood-btn" data-mood="😟" title="Bad">😟<span>Bad</span></button>
+                <button class="mood-btn" data-mood="😢" title="Terrible">😢<span>Terrible</span></button>
+              </div>
+              <div id="mood-history" class="mood-history"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── APPOINTMENTS ─── -->
+      <section id="section-appointments" class="section">
+        <div class="section-header">
+          <h2>🏥 Appointments</h2>
+          <button class="btn-primary" id="add-appt-btn">+ Add Appointment</button>
+        </div>
+        <div id="appointments-list" class="appointments-grid"></div>
+      </section>
+
+      <!-- ─── STATISTICS ─── -->
+      <section id="section-stats" class="section">
+        <div class="section-header"><h2>📈 Health Statistics</h2></div>
+        <div class="stats-charts">
+          <div class="card chart-card">
+            <div class="card-header"><h3>Weekly Medication Adherence</h3></div>
+            <canvas id="adherence-chart" width="400" height="220"></canvas>
+          </div>
+          <div class="card chart-card">
+            <div class="card-header"><h3>Water Intake (Last 7 Days)</h3></div>
+            <canvas id="water-chart" width="400" height="220"></canvas>
+          </div>
+          <div class="card chart-card">
+            <div class="card-header"><h3>Steps (Last 7 Days)</h3></div>
+            <canvas id="steps-chart" width="400" height="220"></canvas>
+          </div>
+          <div class="card chart-card">
+            <div class="card-header"><h3>Mood History</h3></div>
+            <canvas id="mood-chart" width="400" height="220"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── EMERGENCY ─── -->
+      <section id="section-emergency" class="section">
+        <div class="section-header">
+          <h2>🚨 Emergency Contacts</h2>
+          <button class="btn-danger" id="add-contact-btn">+ Add Contact</button>
+        </div>
+        <div class="emergency-info">
+          <div class="emergency-numbers">
+            <div class="emg-number red"><span>🚑</span><div><strong>Ambulance</strong><span>102 / 108</span></div></div>
+            <div class="emg-number blue"><span>👮</span><div><strong>Police</strong><span>100</span></div></div>
+            <div class="emg-number orange"><span>🔥</span><div><strong>Fire</strong><span>101</span></div></div>
+          </div>
+        </div>
+        <div id="contacts-list" class="contacts-grid"></div>
+      </section>
+
+      <!-- ─── CALENDAR ─── -->
+      <section id="section-calendar" class="section">
+        <div class="section-header">
+          <h2>📆 Medication Calendar</h2>
+          <div class="cal-nav" role="group" aria-label="Calendar navigation">
+            <button class="btn-icon" id="cal-prev" aria-label="Previous month">‹</button>
+            <span id="cal-month-label" class="cal-month-label" aria-live="polite"></span>
+            <button class="btn-icon" id="cal-next" aria-label="Next month">›</button>
+          </div>
+        </div>
+        <div class="card">
+          <div id="calendar-grid" class="calendar-grid"></div>
+          <div id="cal-day-detail" class="cal-day-detail hidden"></div>
+        </div>
+      </section>
+
+      <!-- ─── HISTORY ─── -->
+      <section id="section-history" class="section">
+        <div class="section-header"><h2>📋 Medicine History</h2>
+          <div class="history-export-btns">
+            <button class="btn-secondary" id="export-csv-btn">⬇ CSV</button>
+            <button class="btn-secondary" id="export-pdf-btn">⬇ PDF</button>
+          </div>
+        </div>
+        <div class="card" style="margin-bottom:16px">
+          <div class="history-summary" id="history-summary"></div>
+        </div>
+        <div class="card">
+          <div class="card-header"><h3>Daily Log</h3></div>
+          <div id="history-list" class="history-list"></div>
+        </div>
+      </section>
+
+      <!-- ─── DOCTORS ─── -->
+      <section id="section-doctors" class="section">
+        <div class="section-header">
+          <h2>👨‍⚕️ Doctors</h2>
+          <button class="btn-primary" id="add-doctor-btn">+ Add Doctor</button>
+        </div>
+        <div id="doctors-list" class="doctors-grid"></div>
+      </section>
+
+      <!-- ─── PRESCRIPTIONS ─── -->
+      <section id="section-prescriptions" class="section">
+        <div class="section-header">
+          <h2>📄 Prescriptions</h2>
+          <button class="btn-primary" id="add-rx-btn">+ Upload Prescription</button>
+        </div>
+        <div id="prescriptions-list" class="prescriptions-grid"></div>
+      </section>
+
+      <!-- ─── FAMILY ─── -->
+      <section id="section-family" class="section">
+        <div class="section-header">
+          <h2>👨‍👩‍👧 Family Profiles</h2>
+          <button class="btn-primary" id="add-member-btn">+ Add Member</button>
+        </div>
+        <div id="family-list" class="family-grid"></div>
+        <div id="active-member-banner" class="active-member-banner hidden"></div>
+      </section>
+
+      <!-- ─── AI ASSISTANT ─── -->
+      <section id="section-ai" class="section">
+        <div class="section-header"><h2>🤖 AI Health Assistant</h2></div>
+        <div class="ai-layout">
+          <div class="card ai-config-card">
+            <div class="card-header"><h3>Configuration</h3></div>
+            <div class="form-group">
+                <label for="ai-api-key">Gemini API Key (optional)</label>
+                <input type="password" id="ai-api-key" placeholder="AIza..." autocomplete="off" />
+                <p class="field-hint">Without a key, the assistant uses built-in answers.</p>
+              </div>
+            <button class="btn-primary" id="ai-save-key">Save Key</button>
+            <div class="ai-quick-topics">
+              <p class="field-hint" style="margin-top:16px;margin-bottom:8px">Quick topics:</p>
+              <div class="quick-chips" id="ai-quick-chips"></div>
+            </div>
+          </div>
+          <div class="card ai-chat-card">
+            <div class="ai-messages" id="ai-messages"></div>
+            <div class="ai-input-row">
+              <textarea id="ai-input" placeholder="Ask about your medicines, health tips..." rows="2"></textarea>
+              <button class="btn-primary" id="ai-send">Send</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── SETTINGS ─── -->
+      <section id="section-settings" class="section">
+        <div class="section-header"><h2>⚙️ Settings</h2></div>
+        <div class="settings-grid">
+          <div class="card">
+            <div class="card-header"><h3>🔔 Notifications</h3></div>
+                <div class="setting-row">
+                  <div class="setting-label">
+                    <label for="setting-notif"><strong>Browser Notifications</strong></label>
+                    <span>Remind me when medicine is due</span>
+                  </div>
+                  <label class="toggle-switch" aria-label="Toggle browser notifications">
+                    <input type="checkbox" id="setting-notif" />
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-label">
+                    <label for="setting-sound"><strong>Reminder Sound</strong></label>
+                    <span>Play sound with notification</span>
+                  </div>
+                  <label class="toggle-switch" aria-label="Toggle reminder sound">
+                    <input type="checkbox" id="setting-sound" checked />
+                    <span class="toggle-track"></span>
+                  </label>
+                </div>
+                <div class="setting-row">
+                  <div class="setting-label">
+                    <label for="setting-advance"><strong>Advance Notice</strong></label>
+                    <span>Minutes before reminder time</span>
+                  </div>
+                  <select id="setting-advance" style="width:auto" aria-label="Advance notice time">
+                <option value="0">At reminder time</option>
+                <option value="5">5 min before</option>
+                <option value="10" selected>10 min before</option>
+                <option value="15">15 min before</option>
+                <option value="30">30 min before</option>
+              </select>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>🎨 Appearance</h3></div>
+            <div class="setting-row">
+              <div class="setting-label">
+                <label for="setting-theme"><strong>Theme</strong></label>
+                <span>Light or dark interface</span>
+              </div>
+              <select id="setting-theme" style="width:auto">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+              </select>
+            </div>
+            <div class="setting-row">
+              <div class="setting-label">
+                <label for="setting-lang"><strong>Language</strong></label>
+                <span>Interface language</span>
+              </div>
+              <select id="setting-lang" style="width:auto">
+                <option value="en">English</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <option value="hi">हिंदी</option>
+                <option value="ar">العربية</option>
+              </select>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>💾 Data &amp; Backup</h3></div>
+            <div class="setting-row">
+              <div class="setting-label">
+                <strong>Export All Data</strong>
+                <span>Download JSON backup</span>
+              </div>
+              <button class="btn-secondary" id="backup-export-btn">Export</button>
+            </div>
+            <div class="setting-row">
+              <div class="setting-label">
+                <strong>Import Data</strong>
+                <span>Restore from JSON backup</span>
+              </div>
+              <label class="btn-secondary" style="cursor:pointer">
+                Import <input type="file" id="backup-import-file" accept=".json" style="display:none" />
+              </label>
+            </div>
+            <div class="setting-row">
+              <div class="setting-label">
+                <strong>Clear All Data</strong>
+                <span>Permanently delete everything</span>
+              </div>
+              <button class="btn-danger" id="clear-data-btn">Clear</button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-header"><h3>📱 App</h3></div>
+            <div class="setting-row">
+              <div class="setting-label">
+                <strong>Install App</strong>
+                <span>Add to home screen</span>
+              </div>
+              <button class="btn-primary" id="pwa-install-btn" disabled>Install</button>
+            </div>
+            <div class="setting-row">
+              <div class="setting-label">
+                <label for="setting-steps-goal"><strong>Daily Steps Goal</strong></label>
+              </div>
+              <input type="number" id="setting-steps-goal" value="10000" min="1000" max="50000" style="width:110px" aria-label="Daily steps goal" />
+            </div>
+            <div class="setting-row">
+              <div class="setting-label">
+                <label for="setting-water-goal"><strong>Daily Water Goal</strong></label>
+                <span>glasses</span>
+              </div>
+              <input type="number" id="setting-water-goal" value="8" min="1" max="20" style="width:80px" aria-label="Daily water goal in glasses" />
+            </div>
+            <button class="btn-primary" id="save-goals-btn" style="margin-top:12px">Save Goals</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ═══════════════════════════════════════════════
+       MODALS
+  ════════════════════════════════════════════════ -->
+
+  <!-- Add Medicine Modal -->
+  <div id="modal-medicine" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="medicine-modal-title">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="medicine-modal-title">Add Medicine</h3>
+        <button class="modal-close" data-modal="modal-medicine" aria-label="Close modal">✕</button>
+      </div>
+      <form id="medicine-form" novalidate>
+        <input type="hidden" id="med-edit-id" />
+        <div class="form-row">
+          <div class="form-group">
+            <label for="med-name">Medicine Name *</label>
+            <input type="text" id="med-name" placeholder="e.g. Paracetamol" required autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label for="med-dosage">Dosage *</label>
+            <input type="text" id="med-dosage" placeholder="e.g. 500mg" required autocomplete="off" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="med-frequency">Frequency</label>
+            <select id="med-frequency">
+              <option value="once">Once daily</option>
+              <option value="twice">Twice daily</option>
+              <option value="thrice">Three times daily</option>
+              <option value="weekly">Weekly</option>
+              <option value="custom">As needed</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="med-time">Time of Day</label>
+            <select id="med-time">
+              <option value="morning">Morning</option>
+              <option value="afternoon">Afternoon</option>
+              <option value="evening">Evening</option>
+              <option value="night">Night</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="med-reminder">Reminder Time</label>
+            <input type="time" id="med-reminder" value="08:00" />
+          </div>
+          <div class="form-group">
+            <label>Color Tag</label>
+            <div class="color-picker" id="med-color-picker" role="group" aria-label="Color tag">
+              <span class="color-dot active" data-color="#3b82f6" style="background:#3b82f6"></span>
+              <span class="color-dot" data-color="#10b981" style="background:#10b981"></span>
+              <span class="color-dot" data-color="#f59e0b" style="background:#f59e0b"></span>
+              <span class="color-dot" data-color="#ef4444" style="background:#ef4444"></span>
+              <span class="color-dot" data-color="#8b5cf6" style="background:#8b5cf6"></span>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="med-notes">Notes</label>
+          <textarea id="med-notes" placeholder="Any special instructions..." rows="2"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" data-modal="modal-medicine">Cancel</button>
+          <button type="submit" class="btn-primary">Save Medicine</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Appointment Modal -->
+  <div id="modal-appointment" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Add Appointment">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Appointment</h3>
+        <button class="modal-close" data-modal="modal-appointment" aria-label="Close modal">✕</button>
+      </div>
+      <form id="appointment-form" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="appt-doctor">Doctor / Hospital *</label>
+            <input type="text" id="appt-doctor" placeholder="Dr. Smith / City Hospital" required autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label for="appt-specialty">Specialty</label>
+            <input type="text" id="appt-specialty" placeholder="e.g. Cardiologist" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="appt-date">Date *</label>
+            <input type="date" id="appt-date" required />
+          </div>
+          <div class="form-group">
+            <label for="appt-time">Time *</label>
+            <input type="time" id="appt-time" required />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="appt-notes">Notes</label>
+          <textarea id="appt-notes" placeholder="Any notes..." rows="2"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" data-modal="modal-appointment">Cancel</button>
+          <button type="submit" class="btn-primary">Save Appointment</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Emergency Contact Modal -->
+  <div id="modal-contact" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Add Emergency Contact">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Emergency Contact</h3>
+        <button class="modal-close" data-modal="modal-contact" aria-label="Close modal">✕</button>
+      </div>
+      <form id="contact-form" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="contact-name">Name *</label>
+            <input type="text" id="contact-name" placeholder="Contact name" required autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label for="contact-relation">Relation</label>
+            <input type="text" id="contact-relation" placeholder="e.g. Spouse, Doctor" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="contact-phone">Phone *</label>
+          <input type="tel" id="contact-phone" placeholder="+1 (555) 000-0000" required pattern="[+]?[\d\s\-().]{7,20}" autocomplete="tel" />
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" data-modal="modal-contact">Cancel</button>
+          <button type="submit" class="btn-primary">Save Contact</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Doctor Modal -->
+  <div id="modal-doctor" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="doctor-modal-title">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="doctor-modal-title">Add Doctor</h3>
+        <button class="modal-close" data-modal="modal-doctor" aria-label="Close modal">✕</button>
+      </div>
+      <form id="doctor-form" novalidate>
+        <input type="hidden" id="doc-edit-id" />
+        <div class="form-row">
+          <div class="form-group">
+            <label for="doc-name">Doctor Name *</label>
+            <input type="text" id="doc-name" placeholder="Dr. Jane Smith" required autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label for="doc-specialty">Specialty</label>
+            <input type="text" id="doc-specialty" placeholder="Cardiologist" />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="doc-phone">Phone</label>
+            <input type="tel" id="doc-phone" placeholder="+1 (555) 000-0000" pattern="[+]?[\d\s\-().]{7,20}" autocomplete="tel" />
+          </div>
+          <div class="form-group">
+            <label for="doc-email">Email</label>
+            <input type="email" id="doc-email" placeholder="doctor@clinic.com" autocomplete="off" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="doc-clinic">Clinic / Hospital</label>
+          <input type="text" id="doc-clinic" placeholder="City Medical Center" />
+        </div>
+        <div class="form-group">
+          <label for="doc-notes">Notes</label>
+          <textarea id="doc-notes" placeholder="Any notes..." rows="2"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" data-modal="modal-doctor">Cancel</button>
+          <button type="submit" class="btn-primary">Save Doctor</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Upload Prescription Modal -->
+  <div id="modal-prescription" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Upload Prescription">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Upload Prescription</h3>
+        <button class="modal-close" data-modal="modal-prescription" aria-label="Close modal">✕</button>
+      </div>
+      <form id="prescription-form" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="rx-title">Title *</label>
+            <input type="text" id="rx-title" placeholder="e.g. March 2025 Prescription" required autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label for="rx-doctor">Doctor</label>
+            <input type="text" id="rx-doctor" placeholder="Dr. Name" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="rx-date">Date</label>
+          <input type="date" id="rx-date" />
+        </div>
+        <div class="form-group">
+          <label for="rx-file">Upload File (Image or PDF)</label>
+          <div class="rx-upload-area" id="rx-upload-area">
+            <input type="file" id="rx-file" accept="image/*,.pdf" style="display:none" />
+            <div class="rx-upload-placeholder" id="rx-upload-placeholder">
+              <span style="font-size:32px">📎</span>
+              <p>Click to select or drag &amp; drop</p>
+              <p style="font-size:11px;color:var(--muted)">JPG, PNG, PDF up to 5MB</p>
+            </div>
+            <div id="rx-preview" class="rx-preview hidden"></div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="rx-notes">Notes</label>
+          <textarea id="rx-notes" placeholder="Any notes..." rows="2"></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" data-modal="modal-prescription">Cancel</button>
+          <button type="submit" class="btn-primary">Save Prescription</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Add Family Member Modal -->
+  <div id="modal-member" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Add Family Member">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Add Family Member</h3>
+        <button class="modal-close" data-modal="modal-member" aria-label="Close modal">✕</button>
+      </div>
+      <form id="member-form" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="member-name">Name *</label>
+            <input type="text" id="member-name" placeholder="e.g. Mom, Dad" required autocomplete="off" />
+          </div>
+          <div class="form-group">
+            <label for="member-relation">Relation</label>
+            <input type="text" id="member-relation" placeholder="Mother, Father, Child..." />
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="member-age">Age</label>
+            <input type="number" id="member-age" placeholder="45" min="0" max="120" />
+          </div>
+          <div class="form-group">
+            <label>Avatar Color</label>
+            <div class="color-picker" id="member-color-picker" role="group" aria-label="Avatar color">
+              <span class="color-dot active" data-color="#1d72e8" style="background:#1d72e8"></span>
+              <span class="color-dot" data-color="#16a34a" style="background:#16a34a"></span>
+              <span class="color-dot" data-color="#ea8c00" style="background:#ea8c00"></span>
+              <span class="color-dot" data-color="#dc2626" style="background:#dc2626"></span>
+              <span class="color-dot" data-color="#7c3aed" style="background:#7c3aed"></span>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-secondary" data-modal="modal-member">Cancel</button>
+          <button type="submit" class="btn-primary">Add Member</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Medicine Search/Filter Modal -->
+  <div id="modal-filter" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-label="Search and Filter Medicines">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Search &amp; Filter Medicines</h3>
+        <button class="modal-close" data-modal="modal-filter" aria-label="Close modal">✕</button>
+      </div>
+      <div class="form-group">
+        <label for="filter-search">Search by name</label>
+        <input type="text" id="filter-search" placeholder="Type medicine name..." autocomplete="off" />
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="filter-time">Time of Day</label>
+          <select id="filter-time">
+            <option value="">All times</option>
+            <option value="morning">Morning</option>
+            <option value="afternoon">Afternoon</option>
+            <option value="evening">Evening</option>
+            <option value="night">Night</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="filter-freq">Frequency</label>
+          <select id="filter-freq">
+            <option value="">All</option>
+            <option value="once">Once daily</option>
+            <option value="twice">Twice daily</option>
+            <option value="thrice">3x daily</option>
+            <option value="weekly">Weekly</option>
+            <option value="custom">As needed</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="filter-sort">Sort by</label>
+        <select id="filter-sort">
+          <option value="name">Name (A-Z)</option>
+          <option value="name-desc">Name (Z-A)</option>
+          <option value="time">Time of Day</option>
+          <option value="newest">Newest First</option>
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="btn-secondary" id="filter-reset">Reset</button>
+        <button type="button" class="btn-primary" id="filter-apply">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast notification -->
+  <div id="toast" class="toast hidden" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <script src="script.js"></script>
+  <script src="features.js"></script>
+</body>
+</html>
